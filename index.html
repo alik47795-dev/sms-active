@@ -13,7 +13,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.sms-active.net/">
 
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23070B14'/%3E%3Crect x='1' y='1' width='98' height='98' rx='21' fill='none' stroke='%2300FF88' stroke-width='2' opacity='0.4'/%3E%3Ctext x='50' y='67' font-family='monospace' font-size='52' font-weight='900' text-anchor='middle' fill='%2300FF88'%3ES%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300FF88' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z'/%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -171,6 +171,18 @@
         
         .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease-out, transform 0.5s ease-out; }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--surface); border: 1px solid var(--border-green);
+            color: var(--white); padding: 16px 32px; border-radius: 8px;
+            font-weight: 600; font-size: 15px; z-index: 10000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
 
         /* ==========================================================================
            NAVIGATION
@@ -185,15 +197,14 @@
         .nav-inner { display: flex; justify-content: space-between; align-items: center; height: 100%; }
         
         .logo-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        
+        /* Updated Logo CSS */
         .logo-icon {
             width: 40px; height: 40px; background-color: var(--bg-2);
             border: 1px solid var(--border-green); border-radius: 10px;
-            display: flex; align-items: flex-end; justify-content: center; gap: 3px; padding-bottom: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--green);
         }
-        .logo-icon .bar { width: 4px; background-color: var(--green); border-radius: 2px; }
-        .logo-icon .bar-1 { height: 8px; }
-        .logo-icon .bar-2 { height: 14px; }
-        .logo-icon .bar-3 { height: 20px; }
         
         .logo-text { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--white); display: flex; align-items: center; }
         .logo-text .active-word { color: var(--green); margin-left: 6px; }
@@ -444,16 +455,6 @@
         .pwd-strength { height: 4px; background: var(--bg); border-radius: 2px; margin-top: 8px; overflow: hidden; display: none; border: 1px solid var(--border); }
         .pwd-bar { height: 100%; width: 0; transition: width 0.3s ease, background-color 0.3s ease; }
 
-        .overlay {
-            position: fixed; inset: 0; background: rgba(7, 11, 20, 0.96); z-index: 99999;
-            display: none; align-items: center; justify-content: center; padding: 24px;
-            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        }
-        .overlay.visible { opacity: 1; }
-        .overlay-card { background: var(--surface); max-width: 520px; width: 100%; padding: 48px; border-radius: 16px; border-top: 3px solid var(--green); border-left: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; transform: translateY(20px); transition: transform 0.4s ease; box-shadow: var(--shadow-green); }
-        .overlay.visible .overlay-card { transform: translateY(0); }
-        .overlay-badge { display: inline-block; background: var(--green-dim); color: var(--green); border: 1px solid var(--border-green); font-weight: 700; font-size: 12px; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; letter-spacing: 0.05em; }
-
         /* ==========================================================================
            FOOTER
            ========================================================================== */
@@ -517,9 +518,9 @@
         <div class="container nav-inner">
             <div class="logo-wrap" onclick="showSection('home')">
                 <div class="logo-icon">
-                    <div class="bar bar-1"></div>
-                    <div class="bar bar-2"></div>
-                    <div class="bar bar-3"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
                 </div>
                 <div class="logo-text">
                     SMS<span class="active-word">Active</span><div class="logo-dot"></div>
@@ -643,10 +644,10 @@
                     <div class="fade-in about-text">
                         <span class="section-label">WHAT IS SMS ACTIVE</span>
                         <h2>Virtual Numbers for a World That Runs on Verification</h2>
-                        <p>Every meaningful digital service today — from messaging apps and social networks to financial platforms and productivity tools — requires phone verification before you can access it. This creates a fundamental problem: using your real personal phone number for every registration exposes you to spam, data leaks, carrier tracking, and the permanent linking of your identity to every account you create.</p>
+                        <p>Every meaningful digital service today — from messaging apps and social networks to financial platforms and productivity tools — requires phone verification before you can access it. This creates a fundamental problem: using your real personal phone number for every registration exposes you to spam, <a href="https://www.staysafeonline.org/articles/how-your-phone-number-is-exposed-phone-number-leaks" target="_blank" rel="noopener noreferrer" style="color:var(--green); text-decoration:none; border-bottom:1px solid var(--border-green);">data leaks</a>, carrier tracking, and the permanent linking of your identity to every account you create.</p>
                         <p>SMS Active exists to solve this at the root. We provide instant virtual phone numbers from 200+ countries that receive SMS verification codes in real time — with no physical SIM card required, no carrier contract, and no personal information attached. You choose a country, select the service you want to verify on, receive your number, and the OTP code appears in your dashboard within seconds.</p>
                         <p>What separates SMS Active from generic virtual number services is the infrastructure behind the delivery. Our network uses a combination of real SIM-based numbers and high-quality virtual numbers, refreshed continuously to maintain the highest possible success rates across even the most spam-resistant platforms. Unlike services that rely on recycled, blacklisted numbers, SMS Active maintains clean, freshly provisioned inventory — which is why our platform-specific success rate consistently exceeds 95%.</p>
-                        <p>Whether you need a single number for a quick verification or thousands of numbers per day for bulk operations, SMS Active scales to match your requirements. Individual users value the privacy and simplicity. Developers and growth teams rely on our API for automated verification workflows. As <a href="https://smsapp.io/en/statistics" target="_blank" rel="noopener noreferrer" style="color:var(--green); text-decoration:none; border-bottom:1px solid var(--border-green);">real-time SMS delivery statistics</a> confirm, the demand for reliable virtual number services continues to accelerate globally — and SMS Active is built to meet that demand at every scale.</p>
+                        <p>Whether you need a single number for a quick verification or thousands of numbers per day for bulk operations, SMS Active scales to match your requirements. Individual users value the privacy and simplicity. Developers and growth teams rely on <a onclick="showSection('api')" style="color:var(--green); text-decoration:none; border-bottom:1px solid var(--border-green); cursor:pointer;">our API</a> for automated verification workflows. As real-time SMS delivery statistics confirm, the demand for reliable virtual number services continues to accelerate globally — and SMS Active is built to meet that demand at every scale.</p>
                     </div>
                     
                     <div class="feature-stack fade-in">
@@ -828,9 +829,9 @@
                         <span class="section-label">WHY VIRTUAL NUMBERS MATTER</span>
                         <h2 style="font-size: 44px; margin-bottom: 24px;">Your Phone Number Is Your Digital Identity. Protect It.</h2>
                         <p style="font-size: 16px; margin-bottom: 20px;">Every time you register on a new platform using your real phone number, you create a permanent data trail. That number gets stored in databases that are routinely sold, breached, or subpoenaed. It links your accounts across platforms. It exposes you to spam calls, phishing attempts, and SIM-swapping attacks — a growing form of identity theft that begins with nothing more than your phone number.</p>
-                        <p style="font-size: 16px; margin-bottom: 20px;">According to <a href="https://www.statista.com/statistics/1401734/mobile-messenger-user-worldwide/?srsltid=AfmBOopd3Mgb3sYaN5EKlhgpoJHl5aSNlx_8OGat-lR7RYrvbDyXJPJf" target="_blank" rel="noopener noreferrer" style="color:var(--green);text-decoration:none;border-bottom:1px solid var(--border-green)">Statista's mobile messaging data</a>, over 6 billion SMS messages are sent daily worldwide — making SMS the most widely used communication channel on the planet, and the most frequently targeted for account verification. Virtual numbers break this chain entirely. When you use SMS Active for verification, the number you receive has no connection to your identity, your carrier, or your location. It receives the OTP code, delivers it to your dashboard, and then expires — leaving no data footprint you didn't explicitly create.</p>
+                        <p style="font-size: 16px; margin-bottom: 20px;">Over 6 billion SMS messages are sent daily worldwide — making SMS the most widely used communication channel on the planet, and the most frequently targeted for account verification. Virtual numbers break this chain entirely. When you use SMS Active for verification, the number you receive has no connection to your identity, your carrier, or your location. It receives the OTP code, delivers it to your dashboard, and then expires — leaving no data footprint you didn't explicitly create.</p>
                         <p style="font-size: 16px; margin-bottom: 20px;">This matters not just for privacy-conscious individuals, but for businesses operating across multiple markets, developers testing applications, and anyone who simply doesn't want their personal number distributed across dozens of third-party databases.</p>
-                        <p style="font-size: 16px;">Research confirms that <a href="https://www.twilio.com/en-us/blog/bulk-sms-marketing" target="_blank" rel="noopener noreferrer" style="color:var(--green); text-decoration:none; border-bottom:1px solid var(--border-green);">SMS messages have a 98% open rate</a> — making SMS the highest-engagement channel available. The same infrastructure that makes SMS so powerful makes it equally worth protecting through privacy-first tools like SMS Active.</p>
+                        <p style="font-size: 16px;">Research confirms that SMS messages have a 98% open rate — making SMS the highest-engagement channel available. The same infrastructure that makes SMS so powerful makes it equally worth protecting through privacy-first tools like SMS Active.</p>
                     </div>
                     
                     <div class="fade-in">
@@ -1924,9 +1925,9 @@
                 <div class="auth-card">
                     <div class="text-center" style="margin-bottom: 32px;">
                         <div class="logo-icon" style="margin: 0 auto 16px;">
-                            <div class="bar bar-1"></div>
-                            <div class="bar bar-2"></div>
-                            <div class="bar bar-3"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
                         </div>
                         <h2 style="font-size: 28px; margin-bottom: 8px;">Create Your SMS Active Account</h2>
                         <p style="font-size: 14px; color: var(--text-muted);">Start verifying in seconds. Free trial included.</p>
@@ -1979,9 +1980,9 @@
                 <div class="auth-card" style="max-width: 420px;">
                     <div class="text-center" style="margin-bottom: 32px;">
                         <div class="logo-icon" style="margin: 0 auto 16px;">
-                            <div class="bar bar-1"></div>
-                            <div class="bar bar-2"></div>
-                            <div class="bar bar-3"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
                         </div>
                         <h2 style="font-size: 28px; margin-bottom: 8px;">Welcome Back</h2>
                         <p style="font-size: 14px; color: var(--text-muted);">Log in to your SMS Active dashboard.</p>
@@ -2026,9 +2027,9 @@
                 <div>
                     <div class="logo-wrap" style="margin-bottom: 16px; cursor: default;">
                         <div class="logo-icon" style="width: 28px; height: 28px;">
-                            <div class="bar bar-1" style="width: 3px; height: 6px;"></div>
-                            <div class="bar bar-2" style="width: 3px; height: 10px;"></div>
-                            <div class="bar bar-3" style="width: 3px; height: 14px;"></div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
                         </div>
                         <div class="logo-text" style="font-size: 14px;">
                             SMS<span class="active-word">Active</span>
@@ -2043,25 +2044,23 @@
                     <ul class="ft-links">
                         <li><a onclick="showSection('services')">Virtual Numbers</a></li>
                         <li><a onclick="showSection('services')">SMS Verification</a></li>
-                        <li><a onclick="showSection('services')">Number Rental</a></li>
-                        <li><a onclick="showSection('services')">Bulk Verification</a></li>
-                        <li><a onclick="showSection('services')">API Access</a></li>
-                        <li><a onclick="showSection('services')">Free Trial</a></li>
+                        <li><a onclick="showSection('pricing')">Number Rental</a></li>
+                        <li><a onclick="showSection('api')">API Access</a></li>
+                        <li><a onclick="showSection('signup')">Free Trial</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <div class="ft-heading">POPULAR PLATFORMS</div>
-                    <ul class="ft-links">
-                        <li><a onclick="showSection('platforms')">WhatsApp</a></li>
-                        <li><a onclick="showSection('platforms')">Telegram</a></li>
-                        <li><a onclick="showSection('platforms')">Google</a></li>
-                        <li><a onclick="showSection('platforms')">Facebook</a></li>
-                        <li><a onclick="showSection('platforms')">Instagram</a></li>
-                        <li><a onclick="showSection('platforms')">TikTok</a></li>
-                        <li><a onclick="showSection('platforms')">Discord</a></li>
-                        <li><a onclick="showSection('platforms')">OpenAI</a></li>
-                    </ul>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                        <a onclick="showSection('platforms')" title="WhatsApp" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">💬</a>
+                        <a onclick="showSection('platforms')" title="Telegram" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">✈️</a>
+                        <a onclick="showSection('platforms')" title="Google" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">🤖</a>
+                        <a onclick="showSection('platforms')" title="Facebook" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">🔵</a>
+                        <a onclick="showSection('platforms')" title="Instagram" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">📸</a>
+                        <a onclick="showSection('platforms')" title="TikTok" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">🎵</a>
+                        <a onclick="showSection('platforms')" title="Discord" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">🎮</a>
+                    </div>
                 </div>
 
                 <div>
@@ -2071,7 +2070,6 @@
                         <li><a onclick="showSection('pricing')">Pricing</a></li>
                         <li><a onclick="showSection('countries')">Countries</a></li>
                         <li><a onclick="showSection('api')">API Docs</a></li>
-                        <li><a onclick="showSection('home')">Blog</a></li>
                         <li><a onclick="showSection('contact')">Contact</a></li>
                     </ul>
                 </div>
@@ -2083,9 +2081,6 @@
                         <li><a onclick="showSection('privacy')">Privacy Policy</a></li>
                     </ul>
                     <button class="btn btn-primary btn-block" onclick="showSection('signup')">Start Free Trial →</button>
-                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 12px; text-align: center;">
-                        Now at <a href="https://smsapp.io" target="_blank" style="color: var(--green);">smsapp.io</a>
-                    </div>
                 </div>
             </div>
             
@@ -2095,22 +2090,6 @@
             </div>
         </div>
     </footer>
-
-    <div id="migration-overlay" class="overlay">
-        <div class="overlay-card">
-            <div class="overlay-badge">🚀 PLATFORM UPDATE</div>
-            <h2 style="font-size: 32px; margin-bottom: 16px;">SMS Active Has a New Home.</h2>
-            <p style="font-size: 16px; color: var(--text-muted); line-height: 1.75; margin-bottom: 24px;">We've upgraded our entire platform and migrated to smsapp.io — a faster, more powerful dashboard with the same affordable pricing, higher success rates, better real-time analytics, and a completely redesigned interface. Everything you came here for is waiting at our new home.</p>
-            <div style="height: 1px; background: var(--border-green); margin-bottom: 24px;"></div>
-            <p style="font-size: 15px; color: var(--white); margin-bottom: 24px; font-weight: 500;">Same pricing. Higher success rates. Free trial included. Click below to continue your signup at our upgraded platform.</p>
-            <div style="display: flex; gap: 24px; justify-content: center; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 32px;">
-                <span style="color: var(--green);">✓</span> Free Trial
-                <span style="color: var(--green);">✓</span> Lowest Prices
-                <span style="color: var(--green);">✓</span> 95%+ Success Rate
-            </div>
-            <button id="overlay-btn" class="btn btn-primary btn-block" style="font-size: 16px; padding: 16px;" onclick="redirectMigration()">Continue to smsapp.io →</button>
-        </div>
-    </div>
 
     <div id="toast" class="toast"></div>
 
@@ -2330,7 +2309,6 @@
                 if(input.type === 'email' && !validateEmail(input.value)) isInvalid = true;
                 if(input.type === 'password' && input.value.length < (input.getAttribute('minlength') || 1)) isInvalid = true;
                 
-                // Navigate DOM to find error message safely
                 let err = input.nextElementSibling;
                 if(err && err.classList.contains('pwd-toggle')) err = err.nextElementSibling;
 
@@ -2363,38 +2341,10 @@
                 }
             }
 
-            if(valid) showMigrationOverlay();
-        }
-
-        // --- MIGRATION OVERLAY ---
-        function showMigrationOverlay() {
-            if(sessionStorage.getItem('smsactive_notice_shown') !== 'true') {
-                sessionStorage.setItem('smsactive_notice_shown', 'true');
-                const overlay = document.getElementById('migration-overlay');
-                overlay.style.display = 'flex';
-                void overlay.offsetWidth;
-                overlay.classList.add('visible');
-            } else {
-                window.open('https://smsapp.io', '_blank');
+            if(valid) {
+                showToast("Success! Processing your " + type + "...");
+                setTimeout(() => { showSection('home'); }, 1500);
             }
-        }
-
-        function redirectMigration() {
-            const btn = document.getElementById('overlay-btn');
-            btn.innerText = "Redirecting...";
-            btn.disabled = true;
-            btn.style.opacity = "0.7";
-            setTimeout(() => {
-                window.open('https://smsapp.io', '_blank');
-                const overlay = document.getElementById('migration-overlay');
-                overlay.classList.remove('visible');
-                setTimeout(() => { 
-                    overlay.style.display = 'none'; 
-                    btn.innerText = "Continue to smsapp.io →";
-                    btn.disabled = false;
-                    btn.style.opacity = "1";
-                }, 300);
-            }, 1500);
         }
 
     </script>

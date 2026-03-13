@@ -2095,6 +2095,58 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        // === DYNAMIC META DATA FOR SPA ===
+        const metaMap = {
+            'home': { 
+                title: 'SMS Active | Virtual Phone Numbers for SMS Verification', 
+                desc: 'SMS Active provides instant virtual phone numbers for SMS verification across 200+ countries. Fast, private, and affordable — starting from $0.10.' 
+            },
+            'services': { 
+                title: 'Our Services | SMS Active Virtual Numbers', 
+                desc: 'Explore our virtual number services: single SMS verification, long-term number rental, and enterprise API access.' 
+            },
+            'pricing': { 
+                title: 'Pricing | Cheap SMS Verification & Number Rental', 
+                desc: 'Pay-as-you-go pricing for virtual numbers. Single SMS verification starts at $0.10. Number rentals from $0.50/day. No hidden fees.' 
+            },
+            'countries': { 
+                title: '200+ Countries | Global Virtual Phone Numbers | SMS Active', 
+                desc: 'Get a virtual phone number from over 200 countries including the US, UK, India, and more for global SMS verification.' 
+            },
+            'platforms': { 
+                title: '600+ Supported Platforms | WhatsApp, Telegram & More', 
+                desc: 'Verify accounts on over 600 platforms including WhatsApp, Telegram, Google, Facebook, TikTok, Discord, and OpenAI.' 
+            },
+            'api': { 
+                title: 'SMS Verification API | Developer Documentation', 
+                desc: 'Integrate automated SMS verification into your application with our robust REST API. Free access, generous rate limits.' 
+            },
+            'about': { 
+                title: 'About Us | SMS Active', 
+                desc: 'Learn about SMS Active, our mission, and the team building the fastest, most reliable SMS verification infrastructure.' 
+            },
+            'contact': { 
+                title: 'Contact Support | SMS Active', 
+                desc: 'Need help with your virtual numbers or API integration? Contact the SMS Active support team for fast resolution.' 
+            },
+            'tos': { 
+                title: 'Terms of Service | SMS Active', 
+                desc: 'Read the Terms of Service for using SMS Active virtual phone numbers and API.' 
+            },
+            'privacy': { 
+                title: 'Privacy Policy | SMS Active', 
+                desc: 'Read our Privacy Policy to learn how SMS Active protects your data and ensures anonymous, secure verifications.' 
+            },
+            'signup': { 
+                title: 'Sign Up | Free Trial Virtual Number | SMS Active', 
+                desc: 'Create your free SMS Active account in seconds and get a free trial virtual number for SMS verification.' 
+            },
+            'login': { 
+                title: 'Log In | SMS Active Dashboard', 
+                desc: 'Log in to your SMS Active dashboard to purchase numbers, view SMS codes, and manage your API keys.' 
+            }
+        };
+
         // === ROUTING SYSTEM ===
         const sections = ['home', 'services', 'pricing', 'countries', 'platforms', 'api', 'about', 'contact', 'tos', 'privacy', 'signup', 'login'];
         
@@ -2145,6 +2197,15 @@
             // Update URL
             const slug = slugMap[id] || '/' + id;
             try { window.history.pushState({ section: id }, '', slug); } catch(e) {}
+
+            // Update Meta Title and Description dynamically
+            if (metaMap[id]) {
+                document.title = metaMap[id].title;
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) {
+                    metaDesc.setAttribute('content', metaMap[id].desc);
+                }
+            }
 
             updateActiveNav(id);
 

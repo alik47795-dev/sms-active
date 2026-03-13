@@ -446,7 +446,7 @@
         .info-val { font-size: 16px; color: var(--white); font-weight: 500; }
 
         /* ==========================================================================
-           AUTH PAGES & OVERLAY
+           AUTH PAGES
            ========================================================================== */
         .auth-wrap { min-height: calc(100vh - var(--nav-height) - 150px); display: flex; align-items: center; justify-content: center; padding: 60px 24px; }
         .auth-card { background: var(--surface); max-width: 480px; width: 100%; border: 1px solid var(--border-green); border-radius: 16px; padding: 48px; }
@@ -2052,15 +2052,16 @@
 
                 <div>
                     <div class="ft-heading">POPULAR PLATFORMS</div>
-                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                        <a onclick="showSection('platforms')" title="WhatsApp" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">💬</a>
-                        <a onclick="showSection('platforms')" title="Telegram" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">✈️</a>
-                        <a onclick="showSection('platforms')" title="Google" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">🤖</a>
-                        <a onclick="showSection('platforms')" title="Facebook" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">🔵</a>
-                        <a onclick="showSection('platforms')" title="Instagram" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">📸</a>
-                        <a onclick="showSection('platforms')" title="TikTok" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">🎵</a>
-                        <a onclick="showSection('platforms')" title="Discord" style="font-size: 24px; cursor: pointer; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">🎮</a>
-                    </div>
+                    <ul class="ft-links">
+                        <li><a onclick="showPlatform('WhatsApp')">WhatsApp</a></li>
+                        <li><a onclick="showPlatform('Telegram')">Telegram</a></li>
+                        <li><a onclick="showPlatform('Google')">Google</a></li>
+                        <li><a onclick="showPlatform('Facebook')">Facebook</a></li>
+                        <li><a onclick="showPlatform('Instagram')">Instagram</a></li>
+                        <li><a onclick="showPlatform('TikTok')">TikTok</a></li>
+                        <li><a onclick="showPlatform('Discord')">Discord</a></li>
+                        <li><a onclick="showPlatform('OpenAI')">OpenAI</a></li>
+                    </ul>
                 </div>
 
                 <div>
@@ -2204,6 +2205,22 @@
                 const visible = [...cat.querySelectorAll('.platform-pill-elem')].some(p => !p.classList.contains('hidden'));
                 cat.style.display = (q && !visible) ? 'none' : '';
             });
+        }
+
+        function showPlatform(query) {
+            // 1. Route to the platforms page
+            showSection('platforms');
+            
+            // 2. Wait for the transition, then apply the search filter
+            setTimeout(() => {
+                const searchInput = document.getElementById('platform-search');
+                if (searchInput) {
+                    searchInput.value = query;
+                    filterPlatforms(query);
+                    // Scroll to the top of the page so they see the result
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }, 300);
         }
 
         // --- INTERSECTION OBSERVER ---
